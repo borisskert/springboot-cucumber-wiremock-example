@@ -1,0 +1,4 @@
+auth:
+  url: https://my-auth-server/auth/token
+  client-id: my_client_id
+  client-secret: my_client_secret

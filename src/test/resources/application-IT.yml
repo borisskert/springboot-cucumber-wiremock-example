@@ -2,3 +2,6 @@ auth:
   url: https://my-auth-server-for-test/auth/token
   client-id: my_client_id_for_test
   client-secret: my_client_secret_for_test
+
+products:
+  url: https://my-products-server-for-test/products

@@ -43,7 +43,7 @@ class AuthClientTest {
                 post("/auth/token")
                         .withHeader("client-id", equalToIgnoreCase("my_client_id_for_test"))
                         .withHeader("client-secret", equalToIgnoreCase("my_client_secret_for_test"))
-                .willReturn(ok(expectedToken))
+                        .willReturn(ok(expectedToken))
         );
 
         String token = client.getToken();

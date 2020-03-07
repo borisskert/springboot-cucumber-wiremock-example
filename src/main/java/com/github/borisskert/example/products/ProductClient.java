@@ -1,6 +1,6 @@
 package com.github.borisskert.example.products;
 
-import com.github.borisskert.example.client.AuthClient;
+import com.github.borisskert.example.auth.AuthClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

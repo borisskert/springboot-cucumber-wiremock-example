@@ -1,6 +1,6 @@
 package com.github.borisskert.example.products;
 
-import com.github.borisskert.example.config.AuthProperties;
+import com.github.borisskert.example.auth.AuthProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

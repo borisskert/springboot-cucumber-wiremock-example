@@ -1,4 +1,4 @@
-package com.github.borisskert.example.config;
+package com.github.borisskert.example.auth;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

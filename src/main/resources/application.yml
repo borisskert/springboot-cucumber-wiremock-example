@@ -5,3 +5,6 @@ auth:
 
 products:
   url: https://my-products-server/products
+
+users:
+  url: https://my-users-server/users

@@ -13,13 +13,14 @@ import java.util.List;
 import java.util.Map;
 
 public class UsersSteps {
+    private static final String USERS_URL = "/api/v1/users";
 
     @Autowired
     private CucumberHttpClient<User> client;
 
     @When("I ask for all users")
     public void iAskForAllUsers() {
-        client.requestGet("/api/v1/users");
+        client.requestGet(USERS_URL);
     }
 
     @Then("should return no users")
@@ -32,6 +33,17 @@ public class UsersSteps {
     public void iShouldGetFollowingUsers(List<User> dataTable) {
         client.verifyLatestStatus(HttpStatus.OK);
         client.verifyLatestBody(dataTable, User.LIST_TYPE);
+    }
+
+    @When("I ask for a user with id {string}")
+    public void iAskForAUserWithId(String userId) {
+        client.requestGet(USERS_URL + "/" + userId);
+    }
+
+    @Then("I should get the following user")
+    public void iShouldGetTheFollowingUser(User dataTable) {
+        client.verifyLatestStatus(HttpStatus.OK);
+        client.verifyLatestBody(dataTable, User.class);
     }
 
     @DataTableType

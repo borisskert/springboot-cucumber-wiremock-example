@@ -1,12 +1,12 @@
 package com.github.borisskert.features.models;
 
-import org.springframework.core.ParameterizedTypeReference;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.List;
 import java.util.Objects;
 
 public final class Product {
-    public static final ParameterizedTypeReference<List<Product>> LIST_TYPE = new ParameterizedTypeReference<List<Product>>() {
+    public static final TypeReference<List<Product>> LIST_TYPE = new TypeReference<List<Product>>() {
     };
 
     public final String id;

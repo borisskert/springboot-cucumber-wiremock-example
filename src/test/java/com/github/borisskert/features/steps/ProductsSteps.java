@@ -1,58 +1,37 @@
 package com.github.borisskert.features.steps;
 
-import com.github.borisskert.features.client.ProductTestClient;
 import com.github.borisskert.features.models.Product;
+import com.github.borisskert.features.world.CucumberHttpClient;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.fail;
-import static org.springframework.http.HttpStatus.OK;
 
 public class ProductsSteps {
 
     @Autowired
-    private ProductTestClient client;
+    private CucumberHttpClient<Product> client;
 
     @When("I ask for all products")
     public void iAskForAllProducts() {
-        client.requestProducts();
+        client.requestGet("/api/v1/products");
     }
 
     @Then("should return no products")
     public void shouldReturnNoProducts() {
-        Optional<ResponseEntity<List<Product>>> maybeResponse = client.getLastResponse();
-
-        if (maybeResponse.isPresent()) {
-            ResponseEntity<List<Product>> response = maybeResponse.get();
-            assertThat(response.getStatusCode(), is(equalTo(OK)));
-            assertThat(response.getBody(), is(equalTo(new ArrayList<>())));
-        } else {
-            fail("Got no response");
-        }
+        client.verifyLatestStatus(HttpStatus.OK);
+        client.verifyLatestBody(new ArrayList<>(), Product.LIST_TYPE);
     }
 
     @Then("I should get following products")
     public void iShouldGetFollowingProducts(List<Product> table) {
-        Optional<ResponseEntity<List<Product>>> maybeResponse = client.getLastResponse();
-
-        if (maybeResponse.isPresent()) {
-            ResponseEntity<List<Product>> response = maybeResponse.get();
-            assertThat(response.getStatusCode(), is(equalTo(OK)));
-            assertThat(response.getBody(), is(equalTo(table)));
-        } else {
-            fail("Got no response");
-        }
+        client.verifyLatestStatus(HttpStatus.OK);
+        client.verifyLatestBody(table, Product.LIST_TYPE);
     }
 
     @DataTableType

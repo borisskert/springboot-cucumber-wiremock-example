@@ -1,9 +1,8 @@
 package com.github.borisskert.example;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootWithWireMockTest
 class ApplicationTests {
 
     @Test

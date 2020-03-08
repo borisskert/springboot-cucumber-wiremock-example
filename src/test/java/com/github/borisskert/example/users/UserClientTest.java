@@ -1,14 +1,12 @@
 package com.github.borisskert.example.users;
 
+import com.github.borisskert.example.SpringBootWithWireMockTest;
 import com.github.borisskert.example.auth.AuthProperties;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.text.MessageFormat;
 
@@ -17,9 +15,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-@SpringBootTest
-@AutoConfigureWireMock(port = 0)
-@ActiveProfiles("IT")
+//@SpringBootTest
+//@AutoConfigureWireMock(port = 0)
+//@ActiveProfiles("IT")
+@SpringBootWithWireMockTest
 class UserClientTest {
 
     @Autowired

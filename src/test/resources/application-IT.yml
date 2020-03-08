@@ -1,3 +1,12 @@
+# https://stackoverflow.com/a/26586028
+spring.main.banner-mode: off
+
+# https://stackoverflow.com/a/35356487
+logging:
+  level:
+    org.springframework: ERROR
+    root: ERROR
+
 auth:
   url: https://my-auth-server-for-test/auth/token
   client-id: my_client_id_for_test

@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
 
+/**
+ * Spring Boot configuration to setup specific application properties (urls in this case) to get data from WireMock server.
+ */
 @Configuration
 public class WireMockConfiguration {
 

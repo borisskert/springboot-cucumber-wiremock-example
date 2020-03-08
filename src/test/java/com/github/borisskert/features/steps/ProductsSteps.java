@@ -29,9 +29,9 @@ public class ProductsSteps {
     }
 
     @Then("I should get following products")
-    public void iShouldGetFollowingProducts(List<Product> table) {
+    public void iShouldGetFollowingProducts(List<Product> dataTable) {
         client.verifyLatestStatus(HttpStatus.OK);
-        client.verifyLatestBody(table, Product.LIST_TYPE);
+        client.verifyLatestBody(dataTable, Product.LIST_TYPE);
     }
 
     @DataTableType

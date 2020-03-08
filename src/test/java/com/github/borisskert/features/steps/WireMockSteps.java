@@ -13,6 +13,9 @@ import java.util.List;
 import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.okForJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
+/**
+ * Contains the all WireMock steps for this solution. It's possible to split this class.
+ */
 public class WireMockSteps {
 
     @Autowired
@@ -30,13 +33,13 @@ public class WireMockSteps {
     }
 
     @Given("the remote data source delivers following products")
-    public void theRemoteDataSourceDeliversFollowingProducts(List<Product> table) {
+    public void theRemoteDataSourceDeliversFollowingProducts(List<Product> dataTable) {
         String validToken = authentication.verifyAndGetAuthToken();
 
         stubFor(
                 get("/products")
                         .withHeader("Authorization", WireMock.equalTo("Bearer " + validToken))
-                        .willReturn(okForJson(table))
+                        .willReturn(okForJson(dataTable))
         );
     }
 

@@ -5,6 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents a Product in cucumber context only.
+ * You should not use the classes of your production because you can change your tests before changing your production code.
+ */
 public final class Product {
     public static final TypeReference<List<Product>> LIST_TYPE = new TypeReference<List<Product>>() {
     };

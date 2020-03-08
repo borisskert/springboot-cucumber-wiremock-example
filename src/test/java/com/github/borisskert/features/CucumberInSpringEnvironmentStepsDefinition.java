@@ -9,6 +9,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
+/**
+ * This class loads the Spring Boot context into the cucumber tests.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("IT")
@@ -21,6 +24,9 @@ import org.springframework.test.context.ContextConfiguration;
 @ComponentScan(basePackages = "com.github.borisskert.features")
 public class CucumberInSpringEnvironmentStepsDefinition {
 
+    /**
+     * This step is mandatory! Without this step cucumber will NOT load the Spring Boot context defined for this class.
+     */
     @Given("our spring application is running")
     public void theRemoteDataSourceDeliversNoProducts() {
     }

@@ -19,6 +19,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * Wrapper class to verify http calls. May be extended with other HttpMethod calls.
+ *
+ * @param <T> body class type
+ */
 @Component
 @Scope(SCOPE_CUCUMBER_GLUE)
 public class CucumberHttpClient<T> {

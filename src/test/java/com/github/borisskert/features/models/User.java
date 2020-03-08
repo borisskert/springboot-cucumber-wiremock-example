@@ -1,45 +1,24 @@
-package com.github.borisskert.example.users;
+package com.github.borisskert.features.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.util.List;
 import java.util.Objects;
 
-/**
- * Represents a user which is immutable
- */
 public class User {
+    public static final TypeReference<List<User>> LIST_TYPE = new TypeReference<List<User>>() {
+    };
 
-    private final String id;
-    private final String username;
-    private final String email;
-    private final String name;
+    public final String id;
+    public final String username;
+    public final String email;
+    public final String name;
 
-    public User(
-            @JsonProperty("id") String id,
-            @JsonProperty("username") String username,
-            @JsonProperty("email") String email,
-            @JsonProperty("name") String name
-    ) {
+    public User(String id, String username, String email, String name) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override

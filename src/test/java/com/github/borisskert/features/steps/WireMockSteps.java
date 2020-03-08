@@ -1,8 +1,10 @@
 package com.github.borisskert.features.steps;
 
 import com.github.borisskert.features.models.Product;
+import com.github.borisskert.features.models.User;
 import com.github.borisskert.features.world.Authentication;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,6 +37,28 @@ public class WireMockSteps {
                 get("/products")
                         .withHeader("Authorization", WireMock.equalTo("Bearer " + validToken))
                         .willReturn(okForJson(table))
+        );
+    }
+
+    @And("the remote data source delivers no users")
+    public void theRemoteDataSourceDeliversNoUsers() {
+        String validToken = authentication.verifyAndGetAuthToken();
+
+        stubFor(
+                get("/users")
+                        .withHeader("Authorization", WireMock.equalTo("Bearer " + validToken))
+                        .willReturn(okJson("[]"))
+        );
+    }
+
+    @And("the remote data source delivers following users")
+    public void theRemoteDataSourceDeliversFollowingUsers(List<User> dataTable) {
+        String validToken = authentication.verifyAndGetAuthToken();
+
+        stubFor(
+                get("/users")
+                        .withHeader("Authorization", WireMock.equalTo("Bearer " + validToken))
+                        .willReturn(okForJson(dataTable))
         );
     }
 }

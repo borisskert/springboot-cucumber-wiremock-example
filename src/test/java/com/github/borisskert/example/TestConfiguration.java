@@ -1,6 +1,6 @@
 package com.github.borisskert.example;
 
-import com.github.borisskert.features.CucumberStepsDefinition;
+import com.github.borisskert.features.CucumberInSpringEnvironmentStepsDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +12,8 @@ import org.springframework.web.client.RestTemplate;
 @ComponentScan(
         excludeFilters = {
                 @ComponentScan.Filter(
-                        type = FilterType.ANNOTATION,
-                        classes = CucumberStepsDefinition.class
+                        type = FilterType.ASSIGNABLE_TYPE,
+                        classes = CucumberInSpringEnvironmentStepsDefinition.class
                 )
         }
 )

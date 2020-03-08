@@ -75,4 +75,15 @@ public class WireMockSteps {
                         .willReturn(okForJson(dataTable))
         );
     }
+
+    @And("the remote data source will not deliver a user for id {string}")
+    public void theRemoteDataSourceWillNotDeliverAUserForId(String userId) {
+        String validToken = authentication.verifyAndGetAuthToken();
+
+        stubFor(
+                get("/users/" + userId)
+                        .withHeader("Authorization", equalTo("Bearer " + validToken))
+                        .willReturn(notFound())
+        );
+    }
 }

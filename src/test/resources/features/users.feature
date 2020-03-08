@@ -27,3 +27,9 @@ Feature: User functionalities
     Then I should get the following user
       | ID  | Username | Email                | Name     |
       | 123 | johnair  | john.air@fakemail.yu | John Air |
+
+  Scenario: Try to get not existing user
+    Given the client has been logged in
+    And the remote data source will not deliver a user for id '666'
+    When I ask for a user with id '666'
+    Then I should get a not found response

@@ -3,6 +3,7 @@ package com.github.borisskert.features.steps;
 import com.github.borisskert.features.models.User;
 import com.github.borisskert.features.world.CucumberHttpClient;
 import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,11 @@ public class UsersSteps {
     public void iShouldGetTheFollowingUser(User dataTable) {
         client.verifyLatestStatus(HttpStatus.OK);
         client.verifyLatestBody(dataTable, User.class);
+    }
+
+    @Then("I should get a not found response")
+    public void iShouldGetANotFoundResponse() {
+        client.verifyLatestStatus(HttpStatus.NOT_FOUND);
     }
 
     @DataTableType

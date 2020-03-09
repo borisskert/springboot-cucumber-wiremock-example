@@ -3,6 +3,7 @@ package com.github.borisskert.features.models;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -45,5 +46,13 @@ public final class Product {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 '}';
+    }
+
+    public static Product from(Map<String, String> entry) {
+        String id = entry.get("ID");
+        String name = entry.get("Name");
+        Double price = Double.valueOf(entry.get("Price"));
+
+        return new Product(id, name, price);
     }
 }

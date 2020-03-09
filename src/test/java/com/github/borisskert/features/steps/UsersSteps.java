@@ -3,7 +3,6 @@ package com.github.borisskert.features.steps;
 import com.github.borisskert.features.models.User;
 import com.github.borisskert.features.world.CucumberHttpClient;
 import io.cucumber.java.DataTableType;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +53,6 @@ public class UsersSteps {
 
     @DataTableType
     public User defineProduct(Map<String, String> entry) {
-        String id = entry.get("ID");
-        String username = entry.get("Username");
-        String email = entry.get("Email");
-        String name = entry.get("Name");
-
-        return new User(id, username, email, name);
+        return User.from(entry);
     }
 }

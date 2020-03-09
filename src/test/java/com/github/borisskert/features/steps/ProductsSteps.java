@@ -36,10 +36,6 @@ public class ProductsSteps {
 
     @DataTableType
     public Product defineProduct(Map<String, String> entry) {
-        String id = entry.get("ID");
-        String name = entry.get("Name");
-        Double price = Double.valueOf(entry.get("Price"));
-
-        return new Product(id, name, price);
+        return Product.from(entry);
     }
 }

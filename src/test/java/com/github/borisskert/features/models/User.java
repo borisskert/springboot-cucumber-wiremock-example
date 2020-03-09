@@ -3,6 +3,7 @@ package com.github.borisskert.features.models;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -49,5 +50,14 @@ public class User {
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public static User from(Map<String, String> entry) {
+        String id = entry.get("ID");
+        String username = entry.get("Username");
+        String email = entry.get("Email");
+        String name = entry.get("Name");
+
+        return new User(id, username, email, name);
     }
 }

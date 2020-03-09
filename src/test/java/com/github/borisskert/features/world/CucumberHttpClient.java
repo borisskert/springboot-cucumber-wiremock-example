@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 @Component
 @Scope(SCOPE_CUCUMBER_GLUE)
+@SuppressWarnings("rawtypes")
 public class CucumberHttpClient<T> {
 
     @Autowired
@@ -37,16 +38,23 @@ public class CucumberHttpClient<T> {
     @Autowired
     private ObjectMapper mapper;
 
-    private ResponseEntity<JsonNode> lastResponse;
+    private ResponseEntity lastResponse;
 
-    public void requestGet(String url) {
+    public void requestGetAsJson(String url) {
         lastResponse = restTemplate.getForEntity(
                 url,
                 JsonNode.class
         );
     }
 
-    public void requestPost(String url, Object body, Object... urlVariables) {
+    public void requestGet(String url) {
+        lastResponse = restTemplate.getForEntity(
+                url,
+                String.class
+        );
+    }
+
+    public void requestPostAsJson(String url, Object body, Object... urlVariables) {
         lastResponse = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
@@ -56,7 +64,7 @@ public class CucumberHttpClient<T> {
         );
     }
 
-    public void requestPost(String url, Object body, MultiValueMap<String, String> headers, Object... urlVariables) {
+    public void requestPostAsJson(String url, Object body, MultiValueMap<String, String> headers, Object... urlVariables) {
         lastResponse = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
@@ -66,7 +74,7 @@ public class CucumberHttpClient<T> {
         );
     }
 
-    public void requestPost(String url, MultiValueMap<String, String> headers, Object... urlVariables) {
+    public void requestPostAsJson(String url, MultiValueMap<String, String> headers, Object... urlVariables) {
         lastResponse = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
@@ -76,8 +84,38 @@ public class CucumberHttpClient<T> {
         );
     }
 
+    public void requestPost(String url, Object body, Object... urlVariables) {
+        lastResponse = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                new HttpEntity<>(body),
+                String.class,
+                urlVariables
+        );
+    }
+
+    public void requestPost(String url, Object body, MultiValueMap<String, String> headers, Object... urlVariables) {
+        lastResponse = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                new HttpEntity<>(body, headers),
+                String.class,
+                urlVariables
+        );
+    }
+
+    public void requestPost(String url, MultiValueMap<String, String> headers, Object... urlVariables) {
+        lastResponse = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                new HttpEntity<>(headers),
+                String.class,
+                urlVariables
+        );
+    }
+
     public void verifyLatestBody(List<T> expectedBody, TypeReference<List<T>> type) {
-        Optional<ResponseEntity<JsonNode>> maybeResponse = getLastResponse();
+        Optional<ResponseEntity> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
             ResponseEntity<JsonNode> response = maybeResponse.get();
@@ -92,7 +130,7 @@ public class CucumberHttpClient<T> {
     }
 
     public void verifyLatestBody(T expectedBody, Class<T> type) {
-        Optional<ResponseEntity<JsonNode>> maybeResponse = getLastResponse();
+        Optional<ResponseEntity> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
             ResponseEntity<JsonNode> response = maybeResponse.get();
@@ -106,18 +144,32 @@ public class CucumberHttpClient<T> {
         }
     }
 
-    public void verifyLatestStatus(HttpStatus expectedStatus) {
-        Optional<ResponseEntity<JsonNode>> maybeResponse = getLastResponse();
+    public void verifyLatestBody(String expectedBody) {
+        Optional<ResponseEntity> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
-            ResponseEntity<JsonNode> response = maybeResponse.get();
+            ResponseEntity<String> response = maybeResponse.get();
+            String body = response.getBody();
+
+            assertThat(body, is(equalTo(expectedBody)));
+        } else {
+            fail("Got no response");
+        }
+    }
+
+    public void verifyLatestStatus(HttpStatus expectedStatus) {
+        Optional<ResponseEntity> maybeResponse = getLastResponse();
+
+        if (maybeResponse.isPresent()) {
+            ResponseEntity response = maybeResponse.get();
             assertThat(response.getStatusCode(), is(equalTo(expectedStatus)));
         } else {
             fail("Got no response");
         }
     }
 
-    private Optional<ResponseEntity<JsonNode>> getLastResponse() {
+    @SuppressWarnings("rawtypes")
+    private Optional<ResponseEntity> getLastResponse() {
         return Optional.ofNullable(lastResponse);
     }
 }

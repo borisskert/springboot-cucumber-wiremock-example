@@ -1,7 +1,6 @@
 # Why this repository
 
-Honestly I am not a friend of cucumber. You have to write a lot of clue code to test simple features and the tests are fragile.
-But I needed a clean solution to integrate cucumber in a SpringBoot environment in addition with WireMock.
+This solution shows how a combination of Cucumber and WireMock could work in a SpringBoot environment.
 
 # Build and run test
 

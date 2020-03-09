@@ -1,8 +1,5 @@
 package com.github.borisskert.features.world;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Scope;
@@ -13,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
-import java.util.List;
 import java.util.Optional;
 
 import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
@@ -23,26 +19,21 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Wrapper class to verify http calls. May be extended with other HttpMethod calls.
- *
- * @param <T> body class type
+ * Wrapper class to verify string http calls. May be extended with other HttpMethod calls.
  */
 @Component
 @Scope(SCOPE_CUCUMBER_GLUE)
-public class CucumberHttpClient<T> {
+public class CucumberStringHttpClient {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Autowired
-    private ObjectMapper mapper;
-
-    private ResponseEntity<JsonNode> lastResponse;
+    private ResponseEntity<String> lastResponse;
 
     public void requestGet(String url) {
         lastResponse = restTemplate.getForEntity(
                 url,
-                JsonNode.class
+                String.class
         );
     }
 
@@ -51,7 +42,7 @@ public class CucumberHttpClient<T> {
                 url,
                 HttpMethod.POST,
                 new HttpEntity<>(body),
-                JsonNode.class,
+                String.class,
                 urlVariables
         );
     }
@@ -61,7 +52,7 @@ public class CucumberHttpClient<T> {
                 url,
                 HttpMethod.POST,
                 new HttpEntity<>(body, headers),
-                JsonNode.class,
+                String.class,
                 urlVariables
         );
     }
@@ -71,53 +62,36 @@ public class CucumberHttpClient<T> {
                 url,
                 HttpMethod.POST,
                 new HttpEntity<>(headers),
-                JsonNode.class,
+                String.class,
                 urlVariables
         );
     }
 
-    public void verifyLatestBody(List<T> expectedBody, TypeReference<List<T>> type) {
-        Optional<ResponseEntity<JsonNode>> maybeResponse = getLastResponse();
+    public void verifyLatestBody(String expectedBody) {
+        Optional<ResponseEntity<String>> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
-            ResponseEntity<JsonNode> response = maybeResponse.get();
-            JsonNode body = response.getBody();
+            ResponseEntity<String> response = maybeResponse.get();
+            String body = response.getBody();
 
-            List<T> convertedBody = mapper.convertValue(body, type);
-
-            assertThat(convertedBody, is(equalTo(expectedBody)));
-        } else {
-            fail("Got no response");
-        }
-    }
-
-    public void verifyLatestBody(T expectedBody, Class<T> type) {
-        Optional<ResponseEntity<JsonNode>> maybeResponse = getLastResponse();
-
-        if (maybeResponse.isPresent()) {
-            ResponseEntity<JsonNode> response = maybeResponse.get();
-            JsonNode body = response.getBody();
-
-            T convertedBody = mapper.convertValue(body, type);
-
-            assertThat(convertedBody, is(equalTo(expectedBody)));
+            assertThat(body, is(equalTo(expectedBody)));
         } else {
             fail("Got no response");
         }
     }
 
     public void verifyLatestStatus(HttpStatus expectedStatus) {
-        Optional<ResponseEntity<JsonNode>> maybeResponse = getLastResponse();
+        Optional<ResponseEntity<String>> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
-            ResponseEntity<JsonNode> response = maybeResponse.get();
+            ResponseEntity<String> response = maybeResponse.get();
             assertThat(response.getStatusCode(), is(equalTo(expectedStatus)));
         } else {
             fail("Got no response");
         }
     }
 
-    private Optional<ResponseEntity<JsonNode>> getLastResponse() {
+    private Optional<ResponseEntity<String>> getLastResponse() {
         return Optional.ofNullable(lastResponse);
     }
 }

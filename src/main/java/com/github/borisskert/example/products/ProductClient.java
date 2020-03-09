@@ -34,4 +34,20 @@ public class ProductClient {
 
         return response.getBody();
     }
+
+    public String createProduct(ProductToCreate product) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + authClient.getToken());
+
+        ResponseEntity<Product> response = restTemplate.exchange(
+                properties.getUrl(),
+                HttpMethod.POST,
+                new HttpEntity<>(product, headers),
+                Product.class
+        );
+
+        Product createdProduct = response.getBody();
+
+        return createdProduct.getId();
+    }
 }

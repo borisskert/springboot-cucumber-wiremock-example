@@ -1,4 +1,4 @@
-package com.github.borisskert.features;
+package com.github.borisskert.features.steps;
 
 import com.github.borisskert.WireMockConfiguration;
 import com.github.borisskert.example.Application;
@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.*;
         }
 )
 @ComponentScan(basePackages = "com.github.borisskert.features")
-public class CucumberInSpringEnvironmentStepsDefinition {
+public class CucumberInSpringEnvironmentSteps {
 
     @Autowired
     private ApplicationContext context;

@@ -20,8 +20,4 @@ import org.springframework.web.client.RestTemplate;
 @ActiveProfiles("IT")
 public class TestConfiguration {
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
 }

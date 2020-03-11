@@ -1,5 +1,6 @@
 package com.github.borisskert.example;
 
+import com.github.borisskert.TestConfiguration;
 import com.github.borisskert.WireMockConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;

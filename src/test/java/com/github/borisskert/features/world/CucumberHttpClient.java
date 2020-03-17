@@ -1,15 +1,12 @@
 package com.github.borisskert.features.world;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -32,96 +29,43 @@ import static org.junit.jupiter.api.Assertions.fail;
 @SuppressWarnings("rawtypes")
 public class CucumberHttpClient<T> {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+    private final TestRestTemplate restTemplate;
+    private final ObjectMapper mapper;
+
+    private final MultiValueMap<String, String> headers = new HttpHeaders();
+
+    private ResponseEntity<String> lastResponse;
 
     @Autowired
-    private ObjectMapper mapper;
-
-    private ResponseEntity lastResponse;
-
-    public void requestGetAsJson(String url) {
-        lastResponse = restTemplate.getForEntity(
-                url,
-                JsonNode.class
-        );
+    public CucumberHttpClient(TestRestTemplate restTemplate, ObjectMapper mapper) {
+        this.restTemplate = restTemplate;
+        this.mapper = mapper;
     }
 
-    public void requestGet(String url) {
-        lastResponse = restTemplate.getForEntity(
-                url,
-                String.class
-        );
+    public void addHeader(String key, String value) {
+        headers.add(key, value);
     }
 
-    public void requestPostAsJson(String url, Object body, Object... urlVariables) {
-        lastResponse = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                new HttpEntity<>(body),
-                JsonNode.class,
-                urlVariables
-        );
+    public void get(String url, Object... urlVariables) {
+        requestEmptyBody(HttpMethod.GET, url, urlVariables);
     }
 
-    public void requestPostAsJson(String url, Object body, MultiValueMap<String, String> headers, Object... urlVariables) {
-        lastResponse = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                new HttpEntity<>(body, headers),
-                JsonNode.class,
-                urlVariables
-        );
+    public void post(String url, Object body, Object... urlVariables) {
+        request(HttpMethod.POST, url, body, urlVariables);
     }
 
-    public void requestPostAsJson(String url, MultiValueMap<String, String> headers, Object... urlVariables) {
-        lastResponse = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                new HttpEntity<>(headers),
-                JsonNode.class,
-                urlVariables
-        );
-    }
-
-    public void requestPost(String url, Object body, Object... urlVariables) {
-        lastResponse = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                new HttpEntity<>(body),
-                String.class,
-                urlVariables
-        );
-    }
-
-    public void requestPost(String url, Object body, MultiValueMap<String, String> headers, Object... urlVariables) {
-        lastResponse = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                new HttpEntity<>(body, headers),
-                String.class,
-                urlVariables
-        );
-    }
-
-    public void requestPost(String url, MultiValueMap<String, String> headers, Object... urlVariables) {
-        lastResponse = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                new HttpEntity<>(headers),
-                String.class,
-                urlVariables
-        );
+    public void postEmptyBody(String url, Object... urlVariables) {
+        requestEmptyBody(HttpMethod.POST, url, urlVariables);
     }
 
     public void verifyLatestBody(List<T> expectedBody, TypeReference<List<T>> type) {
-        Optional<ResponseEntity> maybeResponse = getLastResponse();
+        Optional<ResponseEntity<String>> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
-            ResponseEntity<JsonNode> response = maybeResponse.get();
-            JsonNode body = response.getBody();
+            ResponseEntity<String> response = maybeResponse.get();
+            String body = response.getBody();
 
-            List<T> convertedBody = mapper.convertValue(body, type);
+            List<T> convertedBody = tryToConvertFromJson(body, type);
 
             assertThat(convertedBody, is(equalTo(expectedBody)));
         } else {
@@ -130,13 +74,13 @@ public class CucumberHttpClient<T> {
     }
 
     public void verifyLatestBody(T expectedBody, Class<T> type) {
-        Optional<ResponseEntity> maybeResponse = getLastResponse();
+        Optional<ResponseEntity<String>> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
-            ResponseEntity<JsonNode> response = maybeResponse.get();
-            JsonNode body = response.getBody();
+            ResponseEntity<String> response = maybeResponse.get();
+            String body = response.getBody();
 
-            T convertedBody = mapper.convertValue(body, type);
+            T convertedBody = tryToConvertFromJson(body, type);
 
             assertThat(convertedBody, is(equalTo(expectedBody)));
         } else {
@@ -145,7 +89,7 @@ public class CucumberHttpClient<T> {
     }
 
     public void verifyLatestBody(String expectedBody) {
-        Optional<ResponseEntity> maybeResponse = getLastResponse();
+        Optional<ResponseEntity<String>> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
             ResponseEntity<String> response = maybeResponse.get();
@@ -158,7 +102,7 @@ public class CucumberHttpClient<T> {
     }
 
     public void verifyLatestStatus(HttpStatus expectedStatus) {
-        Optional<ResponseEntity> maybeResponse = getLastResponse();
+        Optional<ResponseEntity<String>> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
             ResponseEntity response = maybeResponse.get();
@@ -168,8 +112,55 @@ public class CucumberHttpClient<T> {
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    private Optional<ResponseEntity> getLastResponse() {
+    private Optional<ResponseEntity<String>> getLastResponse() {
         return Optional.ofNullable(lastResponse);
+    }
+
+    private void requestEmptyBody(HttpMethod method, String url, Object... urlVariables) {
+        lastResponse = restTemplate.exchange(
+                url,
+                method,
+                new HttpEntity<>(headers),
+                String.class,
+                urlVariables
+        );
+
+        headers.clear();
+    }
+
+    private void request(HttpMethod method, String url, Object body, Object... urlVariables) {
+        lastResponse = restTemplate.exchange(
+                url,
+                method,
+                new HttpEntity<>(body, headers),
+                String.class,
+                urlVariables
+        );
+
+        headers.clear();
+    }
+
+    private T tryToConvertFromJson(String body, Class<T> type) {
+        T convertedBody;
+
+        try {
+            convertedBody = mapper.readValue(body, type);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return convertedBody;
+    }
+
+    private List<T> tryToConvertFromJson(String body, TypeReference<List<T>> type) {
+        List<T> convertedBody;
+
+        try {
+            convertedBody = mapper.readValue(body, type);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return convertedBody;
     }
 }

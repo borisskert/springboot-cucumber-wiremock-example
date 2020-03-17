@@ -20,7 +20,7 @@ public class UsersSteps {
 
     @When("I ask for all users")
     public void iAskForAllUsers() {
-        client.requestGetAsJson(USERS_URL);
+        client.get(USERS_URL);
     }
 
     @Then("should return no users")
@@ -37,7 +37,7 @@ public class UsersSteps {
 
     @When("I ask for a user with id {string}")
     public void iAskForAUserWithId(String userId) {
-        client.requestGetAsJson(USERS_URL + "/" + userId);
+        client.get(USERS_URL + "/" + userId);
     }
 
     @Then("I should get the following user")

@@ -21,7 +21,7 @@ public class ProductsSteps {
 
     @When("I ask for all products")
     public void iAskForAllProducts() {
-        httpClient.requestGetAsJson("/api/v1/products");
+        httpClient.get("/api/v1/products");
     }
 
     @Then("should return no products")
@@ -38,7 +38,7 @@ public class ProductsSteps {
 
     @When("I request a product creation")
     public void iRequestAProductCreation(ProductToCreate dataTable) {
-        httpClient.requestPost("/api/v1/products", dataTable);
+        httpClient.post("/api/v1/products", dataTable);
     }
 
     @And("I should get the created product ID {string}")

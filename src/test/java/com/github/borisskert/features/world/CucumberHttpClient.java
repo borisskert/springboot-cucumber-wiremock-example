@@ -21,13 +21,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Wrapper class to verify http calls. May be extended with other HttpMethod calls.
- *
- * @param <T> body class type
  */
 @Component
 @Scope(SCOPE_CUCUMBER_GLUE)
-@SuppressWarnings("rawtypes")
-public class CucumberHttpClient<T> {
+public class CucumberHttpClient {
 
     private final TestRestTemplate restTemplate;
     private final ObjectMapper mapper;
@@ -58,7 +55,7 @@ public class CucumberHttpClient<T> {
         requestEmptyBody(HttpMethod.POST, url, urlVariables);
     }
 
-    public void verifyLatestBody(List<T> expectedBody, TypeReference<List<T>> type) {
+    public <T> void verifyLatestBody(List<T> expectedBody, TypeReference<List<T>> type) {
         Optional<ResponseEntity<String>> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
@@ -73,7 +70,7 @@ public class CucumberHttpClient<T> {
         }
     }
 
-    public void verifyLatestBody(T expectedBody, Class<T> type) {
+    public <T> void verifyLatestBody(T expectedBody, Class<T> type) {
         Optional<ResponseEntity<String>> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
@@ -105,7 +102,7 @@ public class CucumberHttpClient<T> {
         Optional<ResponseEntity<String>> maybeResponse = getLastResponse();
 
         if (maybeResponse.isPresent()) {
-            ResponseEntity response = maybeResponse.get();
+            ResponseEntity<String> response = maybeResponse.get();
             assertThat(response.getStatusCode(), is(equalTo(expectedStatus)));
         } else {
             fail("Got no response");
@@ -140,7 +137,7 @@ public class CucumberHttpClient<T> {
         headers.clear();
     }
 
-    private T tryToConvertFromJson(String body, Class<T> type) {
+    private <T> T tryToConvertFromJson(String body, Class<T> type) {
         T convertedBody;
 
         try {
@@ -152,7 +149,7 @@ public class CucumberHttpClient<T> {
         return convertedBody;
     }
 
-    private List<T> tryToConvertFromJson(String body, TypeReference<List<T>> type) {
+    private <T> List<T> tryToConvertFromJson(String body, TypeReference<List<T>> type) {
         List<T> convertedBody;
 
         try {

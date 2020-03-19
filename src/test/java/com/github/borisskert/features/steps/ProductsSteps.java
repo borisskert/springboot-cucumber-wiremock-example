@@ -17,7 +17,7 @@ import java.util.Map;
 public class ProductsSteps {
 
     @Autowired
-    private CucumberHttpClient<Product> httpClient;
+    private CucumberHttpClient httpClient;
 
     @When("I ask for all products")
     public void iAskForAllProducts() {

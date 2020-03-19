@@ -16,7 +16,7 @@ public class UsersSteps {
     private static final String USERS_URL = "/api/v1/users";
 
     @Autowired
-    private CucumberHttpClient<User> client;
+    private CucumberHttpClient client;
 
     @When("I ask for all users")
     public void iAskForAllUsers() {

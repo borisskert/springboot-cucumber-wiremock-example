@@ -10,7 +10,6 @@ import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,13 +26,13 @@ public class ProductsSteps {
     @Then("should return no products")
     public void shouldReturnNoProducts() {
         httpClient.verifyLatestStatus(HttpStatus.OK);
-        httpClient.verifyLatestBody(new ArrayList<>(), Product.LIST_TYPE);
+        httpClient.verifyLatestBodyIsEmptyArray();
     }
 
     @Then("I should get following products")
     public void iShouldGetFollowingProducts(List<Product> dataTable) {
         httpClient.verifyLatestStatus(HttpStatus.OK);
-        httpClient.verifyLatestBody(dataTable, Product.LIST_TYPE);
+        httpClient.verifyLatestBodyIsEqualTo(dataTable, Product.LIST_TYPE);
     }
 
     @When("I request a product creation")
@@ -44,7 +43,7 @@ public class ProductsSteps {
     @And("I should get the created product ID {string}")
     public void iShouldGetTheCreatedProductID(String expectedProductId) {
         httpClient.verifyLatestStatus(HttpStatus.CREATED);
-        httpClient.verifyLatestBody(expectedProductId);
+        httpClient.verifyLatestBodyIsEqualTo(expectedProductId);
     }
 
     @DataTableType

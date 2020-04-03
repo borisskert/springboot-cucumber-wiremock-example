@@ -1,4 +1,4 @@
-package com.github.borisskert;
+package com.github.borisskert.example;
 
 import com.github.borisskert.features.steps.CucumberInSpringEnvironmentSteps;
 import org.springframework.context.annotation.ComponentScan;

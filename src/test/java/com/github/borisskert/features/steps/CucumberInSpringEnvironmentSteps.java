@@ -2,17 +2,19 @@ package com.github.borisskert.features.steps;
 
 import com.github.borisskert.WireMockConfiguration;
 import com.github.borisskert.example.Application;
+import com.github.borisskert.features.CucumberConfiguration;
 import io.cucumber.java.en.Given;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * This class loads the Spring Boot context into the cucumber tests.
@@ -23,10 +25,10 @@ import static org.hamcrest.Matchers.*;
 @ContextConfiguration(
         classes = {
                 Application.class,
+                CucumberConfiguration.class,
                 WireMockConfiguration.class
         }
 )
-@ComponentScan(basePackages = "com.github.borisskert.features")
 public class CucumberInSpringEnvironmentSteps {
 
     @Autowired

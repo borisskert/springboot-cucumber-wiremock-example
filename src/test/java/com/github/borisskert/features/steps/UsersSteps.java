@@ -8,7 +8,6 @@ import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,13 +25,13 @@ public class UsersSteps {
     @Then("should return no users")
     public void shouldReturnNoUsers() {
         client.verifyLatestStatus(HttpStatus.OK);
-        client.verifyLatestBody(new ArrayList<>(), User.LIST_TYPE);
+        client.verifyLatestBodyIsEmptyArray();
     }
 
     @Then("I should get following users")
     public void iShouldGetFollowingUsers(List<User> dataTable) {
         client.verifyLatestStatus(HttpStatus.OK);
-        client.verifyLatestBody(dataTable, User.LIST_TYPE);
+        client.verifyLatestBodyIsEqualTo(dataTable, User.LIST_TYPE);
     }
 
     @When("I ask for a user with id {string}")
@@ -43,7 +42,7 @@ public class UsersSteps {
     @Then("I should get the following user")
     public void iShouldGetTheFollowingUser(User dataTable) {
         client.verifyLatestStatus(HttpStatus.OK);
-        client.verifyLatestBody(dataTable, User.class);
+        client.verifyLatestBodyIsEqualTo(dataTable, User.class);
     }
 
     @Then("I should get a not found response")
